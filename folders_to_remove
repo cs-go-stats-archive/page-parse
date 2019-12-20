@@ -1,0 +1,4 @@
+./page_parse/bin/
+./page_parse/obj/
+./page_parse-tests/bin/
+./page_parse-tests/obj/

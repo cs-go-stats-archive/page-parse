@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>CSGOStats.Infrastructure.PageParse</RootNamespace>
+    <AssemblyName>CSGOStats.Infrastructure.PageParse</AssemblyName>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors></Authors>
+    <Product></Product>
+    <Company></Company>
+    <PackageId>CSGOStats.Infrastructure.PageParse</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
+  </ItemGroup>
+
+</Project>
