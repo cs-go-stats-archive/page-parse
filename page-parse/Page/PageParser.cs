@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using CSGOStats.Infrastructure.PageParse.Extensions;
+using CSGOStats.Infrastructure.Extensions;
 using CSGOStats.Infrastructure.PageParse.Guard;
 using CSGOStats.Infrastructure.PageParse.Mapping;
 using CSGOStats.Infrastructure.PageParse.Structure.Containers;

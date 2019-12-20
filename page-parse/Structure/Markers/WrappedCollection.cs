@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using CSGOStats.Infrastructure.PageParse.Extensions;
+using CSGOStats.Infrastructure.Extensions;
 
 namespace CSGOStats.Infrastructure.PageParse.Structure.Markers
 {
