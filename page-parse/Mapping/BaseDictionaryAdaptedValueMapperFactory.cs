@@ -2,10 +2,8 @@
 {
     public class BaseDictionaryAdaptedValueMapperFactory : AdaptedValueMapperFactory
     {
-        public BaseDictionaryAdaptedValueMapperFactory(
-            BaseDictionaryValueMapperFactory initialValueMapperFactory, 
-            IValueMapperFactory adaptedValueMapperFactory) 
-            : base(initialValueMapperFactory, adaptedValueMapperFactory)
+        public BaseDictionaryAdaptedValueMapperFactory(IValueMapperFactory adaptedValueMapperFactory) 
+            : base(new BaseDictionaryValueMapperFactory(), adaptedValueMapperFactory)
         {
         }
     }

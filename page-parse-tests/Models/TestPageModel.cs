@@ -1,5 +1,6 @@
 ﻿using CSGOStats.Infrastructure.PageParse.Extraction;
 using CSGOStats.Infrastructure.PageParse.Page;
+using CSGOStats.Infrastructure.PageParse.Page.Parsing;
 using CSGOStats.Infrastructure.PageParse.Structure.Containers;
 using CSGOStats.Infrastructure.PageParse.Structure.Markers;
 
