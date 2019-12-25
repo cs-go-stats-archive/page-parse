@@ -7,7 +7,6 @@ namespace CSGOStats.Infrastructure.PageParse.Mapping
 {
     public class BaseDictionaryValueMapperFactory : IValueMapperFactory
     {
-        // TODO register as DI dependencies
         private readonly IDictionary<MapperCode, Func<IValueMapper>> _mappersDictionary = new Dictionary<MapperCode, Func<IValueMapper>>
         {
             [IntegerValueMapper.IntegerValueCode] = () => new IntegerValueMapper(),

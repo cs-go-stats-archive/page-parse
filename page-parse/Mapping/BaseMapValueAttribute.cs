@@ -1,5 +1,5 @@
 ﻿using System;
-using CSGOStats.Infrastructure.PageParse.Guard;
+using CSGOStats.Extensions.Validation;
 
 namespace CSGOStats.Infrastructure.PageParse.Mapping
 {

@@ -1,4 +1,4 @@
-﻿using CSGOStats.Infrastructure.PageParse.Guard;
+﻿using CSGOStats.Extensions.Validation;
 
 namespace CSGOStats.Infrastructure.PageParse.Mapping
 {
@@ -13,8 +13,9 @@ namespace CSGOStats.Infrastructure.PageParse.Mapping
             _adaptedValueMapperFactory = adaptedValueMapperFactory.NotNull(nameof(adaptedValueMapperFactory));
         }
 
-        public IValueMapper Create(string mapperCode) => CreateSafeFromInitial(mapperCode) ??
-                                                         _adaptedValueMapperFactory.Create(mapperCode);
+        public IValueMapper Create(string mapperCode) => 
+            CreateSafeFromInitial(mapperCode) ??
+            _adaptedValueMapperFactory.Create(mapperCode);
 
         private IValueMapper CreateSafeFromInitial(string mapperCode)
         {

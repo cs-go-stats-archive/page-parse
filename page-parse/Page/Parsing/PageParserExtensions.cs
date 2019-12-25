@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CSGOStats.Infrastructure.PageParse.Guard;
+using CSGOStats.Extensions.Validation;
 using CSGOStats.Infrastructure.PageParse.Mapping;
 using CSGOStats.Infrastructure.PageParse.Structure.Containers;
 using CSGOStats.Infrastructure.PageParse.Structure.Markers;
 using HtmlAgilityPack;
 
-namespace CSGOStats.Infrastructure.PageParse.Page
+namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
 {
     public static class PageParserExtensions
     {
@@ -77,52 +77,5 @@ namespace CSGOStats.Infrastructure.PageParse.Page
 
         private static bool IsAttributePresented<TAttribute>(this Type type)
             where TAttribute : Attribute => type.GetCustomAttribute<TAttribute>(false) != null;
-    }
-
-    public class PropertyMetadata
-    {
-        public object Subtree { get; }
-
-        public PropertyInfo Property { get; }
-
-        public ContainerMetadata Container { get; }
-
-        public bool IsCollection { get; }
-
-        public string MappingCode { get; }
-
-        public PropertyMetadata(object subtree, PropertyInfo property, ContainerMetadata container, bool isCollection, string mappingCode)
-        {
-            Subtree = subtree.NotNull(nameof(subtree));
-            Property = property.NotNull(nameof(property));
-            Container = container.NotNull(nameof(container));
-            IsCollection = isCollection;
-            MappingCode = mappingCode;
-        }
-    }
-
-    public class ContainerMetadata
-    {
-        public string Path { get; }
-
-        public bool IsRequired { get; }
-
-        public ContainerMetadata(string path, bool isRequired)
-        {
-            Path = path.NotNull(nameof(path));
-            IsRequired = isRequired;
-        }
-
-        public static ContainerMetadata CreateFrom(BasePropertyContainerAttribute attribute) => attribute == null
-            ? null
-            : new ContainerMetadata(attribute.Path, attribute.IsRequired);
-    }
-
-    public enum ActionType
-    {
-        Unknown,
-        BindMarkup,
-        ExtractValue,
-        BindMarkupAndExtractValue // TODO may union of Bind/Extract
     }
 }

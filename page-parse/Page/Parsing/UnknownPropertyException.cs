@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace CSGOStats.Infrastructure.PageParse.Page
+namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
 {
     [Serializable]
     public class UnknownPropertyException : Exception

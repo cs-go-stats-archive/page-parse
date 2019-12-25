@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using CSGOStats.Extensions.Validation;
 using CSGOStats.Infrastructure.Extensions;
-using CSGOStats.Infrastructure.PageParse.Guard;
 using CSGOStats.Infrastructure.PageParse.Mapping;
+using CSGOStats.Infrastructure.PageParse.Page.Loading;
 using CSGOStats.Infrastructure.PageParse.Structure.Containers;
 using CSGOStats.Infrastructure.PageParse.Structure.Markers;
 using HtmlAgilityPack;
 
-namespace CSGOStats.Infrastructure.PageParse.Page
+namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
 {
     public class PageParser<TModel> : IPageParser<TModel>
         where TModel : class
@@ -21,12 +22,12 @@ namespace CSGOStats.Infrastructure.PageParse.Page
             _valueMapperFactory = valueMapperFactory.NotNull(nameof(valueMapperFactory));
         }
 
-        public Task<TModel> ParseAsync(string content)
+        public async Task<TModel> ParseAsync(IContentLoader contentLoader)
         {
             var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(content);
+            htmlDocument.LoadHtml(await contentLoader.LoadAsync());
 
-            return Task.FromResult(ParseInternal(htmlDocument));
+            return ParseInternal(htmlDocument);
         }
 
         private TModel ParseInternal(HtmlDocument document)
@@ -66,7 +67,9 @@ namespace CSGOStats.Infrastructure.PageParse.Page
 
         private void ProcessProperty(PropertyMetadata property, HtmlNode htmlRoot)
         {
-            switch (property.GetActionType().ShouldNotBe(ActionType.Unknown, nameof(ActionType)))
+            var actionType = property.GetActionType();
+            ((int) actionType).AnythingBut((int) ActionType.Unknown, nameof(ActionType));
+            switch (actionType)
             {
                 case ActionType.BindMarkup:
                     EnsureSubtreeCreated(property);

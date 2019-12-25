@@ -1,4 +1,4 @@
-﻿using CSGOStats.Infrastructure.PageParse.Guard;
+﻿using CSGOStats.Extensions.Validation;
 using HtmlAgilityPack;
 
 namespace CSGOStats.Infrastructure.PageParse.Mapping.Specific
@@ -7,6 +7,6 @@ namespace CSGOStats.Infrastructure.PageParse.Mapping.Specific
     {
         internal const string IntegerValueCode = nameof(IntegerValueMapper);
 
-        public object Map(HtmlNode root) => TryMap(root).ShouldHaveValue(nameof(root.InnerText));
+        public object Map(HtmlNode root) => TryMap(root).NotNull(nameof(root.InnerText));
     }
 }

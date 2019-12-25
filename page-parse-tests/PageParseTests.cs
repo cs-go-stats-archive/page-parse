@@ -1,8 +1,8 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using CSGOStats.Infrastructure.PageParse.Mapping;
-using CSGOStats.Infrastructure.PageParse.Page;
+using CSGOStats.Infrastructure.PageParse.Page.Loading;
+using CSGOStats.Infrastructure.PageParse.Page.Parsing;
 using CSGOStats.Infrastructure.PageParse.Tests.Models;
 using FluentAssertions;
 using Xunit;
@@ -15,7 +15,7 @@ namespace CSGOStats.Infrastructure.PageParse.Tests
         public async Task ParseHtmlTestAsync()
         {
             var parser = CreateTestPageParser();
-            var result = await parser.ParseAsync(await GetTestHtml());
+            var result = await parser.ParseAsync(CreateTestPageLoader());
 
             result.Header.Numbers.Should().BeEquivalentTo(1, 2, 3);
             result.Header.Texts.Should().BeEquivalentTo("one", "two", "three");
@@ -31,11 +31,7 @@ namespace CSGOStats.Infrastructure.PageParse.Tests
         private static IPageParser<TestPageModel> CreateTestPageParser() => 
             new PageParser<TestPageModel>(new BaseDictionaryValueMapperFactory());
 
-        private static async Task<string> GetTestHtml()
-        {
-            await using var fileStream = new FileStream("Pages/TestPage.html", FileMode.Open, FileAccess.Read, FileShare.Read);
-            using var reader = new StreamReader(fileStream);
-            return await reader.ReadToEndAsync();
-        }
+        private static IContentLoader CreateTestPageLoader() =>
+            new FileContentLoader("Pages/TestPage.html");
     }
 }
