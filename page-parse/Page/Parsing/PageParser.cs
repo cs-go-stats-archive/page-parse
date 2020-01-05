@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using CSGOStats.Extensions.Extensions;
 using CSGOStats.Extensions.Validation;
-using CSGOStats.Infrastructure.Extensions;
 using CSGOStats.Infrastructure.PageParse.Mapping;
 using CSGOStats.Infrastructure.PageParse.Page.Loading;
 using CSGOStats.Infrastructure.PageParse.Structure.Containers;
@@ -80,7 +80,7 @@ namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
                     break;
                 case ActionType.BindMarkupAndExtractValue:
                     EnsureSubtreeCreated(property);
-                    foreach (var subtreeRoot in SelectNodes(property, htmlRoot).EnumerateSafe(property))
+                    foreach (var subtreeRoot in SelectNodes(property, htmlRoot))
                     {
                         AssignValue(property, subtreeRoot);
                     }
@@ -125,7 +125,7 @@ namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
 
         private void BindMarkup(PropertyMetadata property, HtmlNode htmlRoot)
         {
-            foreach (var subtreeRoot in SelectNodes(property, htmlRoot).EnumerateSafe(property))
+            foreach (var subtreeRoot in SelectNodes(property, htmlRoot))
             {
                 DoIfWrappedCollection(
                     GetSubtree(property),
@@ -145,11 +145,26 @@ namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
         }
 
         private object ExtractValueFromMarkup(PropertyMetadata property, HtmlNode htmlRoot) =>
-            _valueMapperFactory.Create(property.MappingCode).Map(htmlRoot);
+            htmlRoot == null 
+                ? null 
+                : _valueMapperFactory.Create(property.MappingCode).Map(htmlRoot);
 
         private static IEnumerable<HtmlNode> SelectNodes(PropertyMetadata property, HtmlNode htmlRoot) => property.IsCollection
-            ? htmlRoot.SelectNodes(property.Container.Path)
-            : htmlRoot.SelectSingleNode(property.Container.Path).ToCollection();
+            ? SelectNodeCollection(property, htmlRoot)
+            : SelectSingleNode(property, htmlRoot);
+
+        private static IEnumerable<HtmlNode> SelectNodeCollection(PropertyMetadata property, HtmlNode htmlRoot) =>
+            GetNodesByPath(htmlRoot, property.Container.Path)
+                .ToArrayFast()
+                .CheckRequirement(property, htmlRoot);
+
+        private static IEnumerable<HtmlNode> SelectSingleNode(PropertyMetadata property, HtmlNode htmlRoot) =>
+            GetNodesByPath(htmlRoot, property.Container.Path)
+                .SingleOrThrow(property, htmlRoot)
+                .CheckRequirement(property, htmlRoot);
+
+        private static IEnumerable<HtmlNode> GetNodesByPath(HtmlNode htmlRoot, string path) =>
+            htmlRoot.SelectNodes(path);
 
         private static object CreateInstance(PropertyInfo property, object parent)
         {

@@ -13,20 +13,8 @@ namespace CSGOStats.Infrastructure.PageParse.Mapping
             _adaptedValueMapperFactory = adaptedValueMapperFactory.NotNull(nameof(adaptedValueMapperFactory));
         }
 
-        public IValueMapper Create(string mapperCode) => 
-            CreateSafeFromInitial(mapperCode) ??
+        public IValueMapper Create(string mapperCode) =>
+            _initialValueMapperFactory.Create(mapperCode) ??
             _adaptedValueMapperFactory.Create(mapperCode);
-
-        private IValueMapper CreateSafeFromInitial(string mapperCode)
-        {
-            try
-            {
-                return _initialValueMapperFactory.Create(mapperCode);
-            }
-            catch
-            {
-                return null;
-            }
-        }
     }
 }

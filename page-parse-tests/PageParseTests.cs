@@ -19,10 +19,21 @@ namespace CSGOStats.Infrastructure.PageParse.Tests
 
             result.Header.Numbers.Should().BeEquivalentTo(1, 2, 3);
             result.Header.Texts.Should().BeEquivalentTo("one", "two", "three");
+            result.Header.Span.Should().Be("test-span");
 
             result.Body.Containers.Select(x => (x.Number, x.Text)).Should().BeEquivalentTo(Enumerable
                 .Range(1, 2)
                 .Select(i => (i, $"text {i}")));
+            result.Body.Link.Should().Be("https://www.mozilla.org/en-US/");
+            result.Body.ImageTitle.Should().Be("Mozilla");
+            result.Body.Submodel.Link.Should().Be("https://www.mozilla.org/en-US/");
+            result.Body.Submodel.Title.Should().Be("Mozilla");
+            result.Body.Containers2.Select(x => x.Text).Should().BeEquivalentTo(new[]
+            {
+                "Text 1",
+                null,
+                "Text 3",
+            });
 
             result.Footer.Should().Be("Footer text.");
         }
