@@ -19,7 +19,7 @@ namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
         {
             Subtree = subtree.NotNull(nameof(subtree));
             Property = property.NotNull(nameof(property));
-            Container = container.NotNull(nameof(container));
+            Container = container;
             IsCollection = isCollection;
             MappingCode = mappingCode;
         }

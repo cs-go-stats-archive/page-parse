@@ -1,19 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using CSGOStats.Infrastructure.PageParse.Mapping.Specific;
-using MapperCode = System.String;
+﻿using CSGOStats.Infrastructure.PageParse.Mapping.Specific;
 
 namespace CSGOStats.Infrastructure.PageParse.Mapping
 {
     public class BaseDictionaryValueMapperFactory : IValueMapperFactory
     {
-        private readonly IDictionary<MapperCode, Func<IValueMapper>> _mappersDictionary = new Dictionary<MapperCode, Func<IValueMapper>>
+        public IValueMapper Create(string mapperCode)
         {
-            [IntegerValueMapper.IntegerValueCode] = () => new IntegerValueMapper(),
-            [NullableIntegerValueMapper.NullableIntegerValueCode] = () => new NullableIntegerValueMapper(),
-            [StringValueMapper.StringValueCode] = () => new StringValueMapper(),
-        };
-
-        public IValueMapper Create(string mapperCode) => _mappersDictionary[mapperCode].Invoke();
+            switch (mapperCode)
+            {
+                case AnchorLinkMapper.AnchorLinkValueCode:
+                    return new AnchorLinkMapper();
+                case ElementClassMapper.ElementClassValueCode:
+                    return new ElementClassMapper();
+                case ElementTitleMapper.ElementTitleValueCode:
+                    return new ElementTitleMapper();
+                case IntegerValueMapper.IntegerValueCode:
+                    return new IntegerValueMapper();
+                case NullableIntegerValueMapper.NullableIntegerValueCode:
+                    return new NullableIntegerValueMapper();
+                case StringValueMapper.StringValueCode:
+                    return new StringValueMapper();
+                default:
+                    return null;
+            }
+        }
     }
 }

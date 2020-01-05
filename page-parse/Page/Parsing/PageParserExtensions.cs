@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CSGOStats.Extensions.Validation;
+using CSGOStats.Extensions.Extensions;
 using CSGOStats.Infrastructure.PageParse.Mapping;
 using CSGOStats.Infrastructure.PageParse.Structure.Containers;
 using CSGOStats.Infrastructure.PageParse.Structure.Markers;
@@ -20,16 +20,6 @@ namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
             var genericType = collection.GetType().GetGenericArguments().Single();
             var instance = genericType.CreateInstance();
             return (instance, genericType.ExtractParseProperties(instance));
-        }
-
-        public static IEnumerable<HtmlNode> EnumerateSafe(this IEnumerable<HtmlNode> nodes, PropertyMetadata metadata)
-        {
-            if (metadata.Container.IsRequired)
-            {
-                return nodes.NotNull(nameof(nodes));
-            }
-
-            return nodes ?? Enumerable.Empty<HtmlNode>();
         }
 
         public static ActionType GetActionType(this PropertyMetadata property)
@@ -59,6 +49,52 @@ namespace CSGOStats.Infrastructure.PageParse.Page.Parsing
         public static bool IsLeaf(this Type type) => type.IsAttributePresented<ModelLeafAttribute>();
 
         public static bool IsCollection(this PropertyInfo property) => property.IsAttributePresented<CollectionAttribute>();
+
+        public static IEnumerable<HtmlNode> CheckRequirement(this IReadOnlyCollection<HtmlNode> nodes, PropertyMetadata property, HtmlNode htmlRoot)
+        {
+            if (!property.Container.IsRequired)
+            {
+                return nodes;
+            }
+
+            if (nodes.Any())
+            {
+                return nodes;
+            }
+
+            throw new RequiredMarkupMissing(htmlRoot, property.Container.Path);
+        }
+
+        public static HtmlNode SingleOrThrow(this IEnumerable<HtmlNode> nodes, PropertyMetadata property, HtmlNode htmlRoot)
+        {
+            if (nodes == null)
+            {
+                return null;
+            }
+
+            var nodesArray = nodes.ToArrayFast();
+            if (nodesArray.Length > 1)
+            {
+                throw new AmbiguousMarkupPath(htmlRoot, property.Container.Path); 
+            }
+
+            return nodesArray.Single();
+        }
+
+        public static IEnumerable<HtmlNode> CheckRequirement(this HtmlNode node, PropertyMetadata property, HtmlNode htmlRoot)
+        {
+            if (!property.Container.IsRequired)
+            {
+                return node.ToCollection();
+            }
+
+            if (node != null)
+            {
+                return node.ToCollection();
+            }
+
+            throw new RequiredMarkupMissing(htmlRoot, property.Container.Path);
+        }
 
         private static IEnumerable<PropertyMetadata> ExtractParseProperties(this Type type, object instance) => type
             .GetProperties(BindingFlags.Public |
