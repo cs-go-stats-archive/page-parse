@@ -1,15 +1,11 @@
-docker-compose -p cs-go-stats up --no-recreate -d
+category=infrastructure
+service=page-parse
+version=0.2.1
 
-rm -rf `cat folders_to_remove | sed 's/\\r//g'`
+cd ./../../automation_scripts
 
-rm -f ./../../../target/infrastructure/CSGOStats.Infrastructure.PageParse*.nupkg && 
-	dotnet restore -v m ./page-parse.sln && 
-	dotnet build -v diag -c Release --no-incremental ./page-parse.sln && 
-	dotnet test -v n ./page-parse.sln && 
-	dotnet pack -v m -c Release -o ./../../../target/infrastructure/ ./page-parse.sln && 
-	dotnet nuget push ./../../../target/infrastructure/CSGOStats.Infrastructure.PageParse*.nupkg -k b8e0f6c7-0f8d-3d80-83dc-eccb59ee6083 --skip-duplicate -n true -t 30 -s http://localhost:8081/repository/nuget-default/
+#<project_context> <repository>
+./verify.sh $category $service
 
-rm -f ./../../../target/infrastructure/CSGOStats.Infrastructure.PageParse*.nupkg
-
-echo ''
-read -p 'Run finished. Pressing any key will terminate this script.'
+#<project_context> <project_name> <package_version> <pack_nuget> <pack_objects> <pack_docker>
+./push.sh $category $service $version yes no no
